@@ -2,140 +2,122 @@ package fr.esiea.poo.hearthstonebattleground;
 
 public class Minion {
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
 	protected int idMinion;
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
 	protected String name;
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
 	private int rank;
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
 	private int attack;
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
 	private int defense;
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
 	private int cost;
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
 	private String description;
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
 	private Tribe tribe;
+	private int position = 0;
+	protected int originalDefense;
 	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
-	
-	private int position;
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 */
-	public Minion(){
+	public Minion(int id, String name, int rank, int attack, int defense, int cost, String description){
 		super();
+		this.name = name;
+		this.rank = rank;
+		this.idMinion = id;
+		this.defense = defense;
+		this.attack = attack;
+		this.cost = 3;
+		this.description = description;
+		this.originalDefense = defense;
+	}
+	
+	
+	public int getIdMinion() {
+		return idMinion;
 	}
 
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
+	public void setIdMinion(int idMinion) {
+		this.idMinion = idMinion;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+
+	public int getDefense() {
+		return defense;
+	}
+
+	public void setDefense(int defense) {
+		this.defense = defense;
+	}
+
+	public int getCost() {
+		return cost;
+	}
+
+	public void setCost(int cost) {
+		this.cost = cost;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Tribe getTribe() {
+		return tribe;
+	}
+
+	public void setTribe(Tribe tribe) {
+		this.tribe = tribe;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	public void setAttack(int attack) {
+		this.attack = attack;
+	}
 	
 	public void addAttack(int points) {
-		// TODO implement me
+		this.attack += points;
 	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
 	
 	public void addDefense(int points) {
-		// TODO implement me
+		this.defense += points;
 	}
-	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
 	
 	public void receiveDamage(int points) {
-		// TODO implement me
+		System.out.println(this.name + " lost " + points + " defense.");
+		this.defense -= points;
 	}
 	
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!--  end-user-doc  -->
-	 * @generated
-	 * @ordered
-	 */
+	public int getAttack() {
+		return this.attack;
+	}
 	
 	public boolean checkDeath() {
-		// TODO implement me
-		return false;	
+		return this.defense <= 0;
 	}
 	
-	
+	public String printCard() {
+		return "===================\n"
+				+ "========= name of the card ==========\n"
+				+ "=======================================";
+	}
 }
