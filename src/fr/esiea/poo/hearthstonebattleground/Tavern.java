@@ -1,6 +1,7 @@
 package fr.esiea.poo.hearthstonebattleground;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +34,10 @@ public class Tavern
 		this.setPlayerShop(id);
 		// reset previous cards attributes
 		player.resetCardsAttributes();
+		// reduce level up cost
+		if (player.getCostLevelUp() > 1) {
+			player.setCostLevelUp(player.getCostLevelUp()-1);
+		}
 	}
 	
 	// refresh shop player offer for one gold
@@ -127,6 +132,23 @@ public class Tavern
 		}
 	}
 	
+	public void levelUp(int playerId) {
+		// check if player has 5 gold
+		if (this.buyers.get(playerId).getGold() >= 5) {
+			// maximum level for tavern
+			if (this.buyers.get(playerId).getLevel() >= 4) {
+				System.out.println("Your tavern level is maximise");
+			} else {
+				// level up
+				this.buyers.get(playerId).setLevel(this.buyers.get(playerId).getLevel() + 1);
+				this.buyers.get(playerId).setCostLevelUp(5);
+				this.buyers.get(playerId).lostGold(5);
+			}
+		} else {
+			System.out.println(this.buyers.get(playerId).getName() + " has insuficient gold to level up !");
+		}
+	}
+	
 
 	public void close() {
 		// quit buyers list and remove player shop
@@ -153,6 +175,19 @@ public class Tavern
 
 	public void setShops(List<List<Minion>> shops) {
 		this.shops = shops;
+	}
+	
+	public boolean moveMinion(Minion minion, int position, int playerId) {
+		try {
+			List<Minion> playerHand = this.buyers.get(playerId).getBoard().getHand();
+			int oldPosition = playerHand.indexOf(minion);
+			// swap minion items
+			Collections.swap(playerHand, position, oldPosition);
+			return true;
+		} catch (Exception error) {
+			System.out.println("Impossible to change " + minion.getName() + " position...");
+			return false;
+		}
 	}
 }
 

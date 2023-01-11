@@ -11,18 +11,28 @@ public class Player {
 	private int level;
 	private int hp;	
 	private int gold;
-	private Board board;	
+	private Board board;
+	private int costLevelUp;
 	
 	public Player(int id, String name){
 		super();
 		this.idPlayer = id;
 		this.name = name;
 		this.board = new Board();
-		this.gold = 3;
+		this.gold = 8;
 		this.hp = 20;
 		this.level = 1;
+		this.costLevelUp = 5;
 	}
 	
+	public int getCostLevelUp() {
+		return costLevelUp;
+	}
+
+	public void setCostLevelUp(int costLevelUp) {
+		this.costLevelUp = costLevelUp;
+	}
+
 	public int getIdPlayer() {
 		return idPlayer;
 	}
@@ -103,6 +113,10 @@ public class Player {
 	
 	public void lostGold(int gold) {
 		this.gold -= gold;
+	}
+	
+	public void levelUp() {
+		this.level++; 
 	}
 	
 	public void resetCardsAttributes() {
