@@ -3,9 +3,7 @@ package fr.esiea.poo.hearthstonebattleground;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,7 +29,6 @@ public class Game {
 		this.addPlayer(player1);
 		Player player2 = new Player(this.players.size(), "Player2");
 		this.addPlayer(player2);		
-		// Gameplay gameplay = new Gameplay();
 	}
 	
 	public List<Player> getPlayers() {
@@ -65,10 +62,6 @@ public class Game {
 	public void reset() {
 		this.gameplay.finish();
 	}
-
-	public void startGame() {
-		// TODO implement me
-	}
 	
 	public List<Minion> getMinions() { // get all minions from XML file
 		List<Minion> minions = new ArrayList<Minion>();
@@ -87,6 +80,12 @@ public class Game {
 					int attack = Integer.parseInt(cardElement.getElementsByTagName("attack").item(0).getTextContent()); // attack
 					int defense = Integer.parseInt(cardElement.getElementsByTagName("health").item(0).getTextContent()); // health
 					int cost = Integer.parseInt(cardElement.getElementsByTagName("manaCost").item(0).getTextContent()); // cost
+					int minionType;
+					if (cardElement.getElementsByTagName("minionTypeId").item(0) != null) {
+						minionType = Integer.parseInt(cardElement.getElementsByTagName("minionTypeId").item(0).getTextContent()); // minion tribe id
+					} else {
+						minionType = 0;
+					}
 					int rank = 0;
 					String description = cardElement.getElementsByTagName("flavorText").item(0).getTextContent(); // description
 					NodeList detailsList = cardElement.getElementsByTagName("battlegrounds"); // get card details
@@ -98,7 +97,8 @@ public class Game {
 						}
 					}
 					// Minion instantiation
-					Minion minion = new Minion(id, name, rank, attack, defense, cost, description);
+					Tribe tribe = this.findTribe(minionType);
+					Minion minion = new Minion(id, name, rank, attack, defense, cost, description, tribe);
 					// Add minion to the list
 					minions.add(minion);
 				}
@@ -112,5 +112,30 @@ public class Game {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private Tribe findTribe(int tribeId) {
+		switch (tribeId) {
+			case 18:
+				return new Tribe(TribeCollection.Elemental, "Allows you to add 7 minions in your hand.", tribeId, TribeActions.reinforcer);
+			case 20:
+				return new Tribe(TribeCollection.Beast, "Upper your beast minions attack (+2).", tribeId, TribeActions.upAttack);
+			case 15:
+				return new Tribe(TribeCollection.Demon, "Upper your level (+1)", tribeId, TribeActions.upLevel);
+			case 24:
+				return new Tribe(TribeCollection.Dragon, "Upper your dragon minions defense (+2).", tribeId, TribeActions.upDefense);
+			case 17:
+				return new Tribe(TribeCollection.Mech, "Give you 1 hp at each turn", tribeId, TribeActions.healer);
+			case 14:
+				return new Tribe(TribeCollection.Murloc, "Accelerates the reduction of tavern's cost.", tribeId, TribeActions.levelCost);
+			case 92:
+				return new Tribe(TribeCollection.Naga, "Each minion in your shop costs one gold less.", tribeId, TribeActions.stingy);
+			case 23:
+				return new Tribe(TribeCollection.Pirate, "Accelerates your gold retribution.", tribeId, TribeActions.miner);
+			case 43:
+				return new Tribe(TribeCollection.Quilboar, "For the next turn, your level cost will be 0.", tribeId, TribeActions.levelCost);
+			default:
+				return new Tribe(TribeCollection.Warrior, "It's a simple minion, but he will be faithful to you", tribeId, TribeActions.fight);
+		}
 	}
 }

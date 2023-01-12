@@ -11,9 +11,12 @@ public class Minion {
 	private String description;
 	private Tribe tribe;
 	private int position = 0;
+	// original values permit to reset values (tribes attributes)
 	protected int originalDefense;
+	protected int originalAttack;
+	protected int originalCost;
 	
-	public Minion(int id, String name, int rank, int attack, int defense, int cost, String description){
+	public Minion(int id, String name, int rank, int attack, int defense, int cost, String description, Tribe tribe){
 		super();
 		this.name = name;
 		this.rank = rank;
@@ -23,6 +26,9 @@ public class Minion {
 		this.cost = 3;
 		this.description = description;
 		this.originalDefense = defense;
+		this.originalAttack = attack;
+		this.originalCost = 3;
+		this.tribe = tribe;
 	}
 	
 	
@@ -103,8 +109,8 @@ public class Minion {
 	}
 	
 	public void receiveDamage(int points) {
-		System.out.println(this.name + " lost " + points + " defense.");
 		this.defense -= points;
+		System.out.println(this.name + " lost " + points + " defense (" + this.defense + "hp).");
 	}
 	
 	public int getAttack() {
@@ -113,11 +119,5 @@ public class Minion {
 	
 	public boolean checkDeath() {
 		return this.defense <= 0;
-	}
-	
-	public String printCard() {
-		return "===================\n"
-				+ "========= name of the card ==========\n"
-				+ "=======================================";
 	}
 }

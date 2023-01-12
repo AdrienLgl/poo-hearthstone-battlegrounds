@@ -12,14 +12,14 @@ public class Player {
 	private int hp;	
 	private int gold;
 	private Board board;
-	private int costLevelUp;
+	private int costLevelUp; // cost to level tavern level
 	
 	public Player(int id, String name){
 		super();
 		this.idPlayer = id;
 		this.name = name;
 		this.board = new Board();
-		this.gold = 8;
+		this.gold = 3;
 		this.hp = 20;
 		this.level = 1;
 		this.costLevelUp = 5;
@@ -94,11 +94,14 @@ public class Player {
 	}
 
 	public void attack(Player player, Minion minion) {
+		// attack other player with minion
 		System.out.println(this.name + " is attacking " + player.getName() + "...");
 		List<Minion> opponent = player.getDeck();
 		Random rand = new Random();
+		// get random minion on opponent board
 		Minion victim = opponent.get(rand.nextInt(opponent.size()));
 		System.out.println(minion.getName() + " attacked " + victim.getName() + " !");
+		// receive damage
 		victim.receiveDamage(minion.getAttack());
 	}
 	
@@ -123,6 +126,8 @@ public class Player {
 		// reset all cards attributes before fighting
 		for (int i =0; i < this.board.getHand().size(); i++) {
 			this.board.getHand().get(i).setDefense(this.board.getHand().get(i).originalDefense);
+			this.board.getHand().get(i).setAttack(this.board.getHand().get(i).originalAttack);
+			this.board.getHand().get(i).setCost(this.board.getHand().get(i).originalCost);
 		}
 	}
 }

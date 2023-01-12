@@ -9,7 +9,7 @@ import java.util.Random;
 public class Tavern
 {	
 	private static final int AVAILABLECARDS = 3;
-	private static final int MAXHANDCARDS = 3;
+	private static final int MAXHANDCARDS = 6;
 	private List<Minion> deck;
 	private List<Player> buyers;
 	private List<List<Minion>> shops;
@@ -37,6 +37,19 @@ public class Tavern
 		// reduce level up cost
 		if (player.getCostLevelUp() > 1) {
 			player.setCostLevelUp(player.getCostLevelUp()-1);
+		}
+		// check minion tribes to update attributes each turn
+		for (int i = 0; i < player.getBoard().getHand().size(); i++) {
+			switch (player.getBoard().getHand().get(i).getTribe().getAction()) {
+			case healer:
+				player.setHp(player.getHp() + 1);
+				break;
+			case miner:
+				player.gainGold(1);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	
@@ -75,14 +88,21 @@ public class Tavern
         return minion;
 	}
 	
-    // IMPORTANT: check if card isn't in other players hands (conflict)
+    // IMPORTANT: check if card isn't in other players hands and shop (conflict)
 	private boolean uniqueCard(Minion minion) {
 		for(int i = 0; i < this.buyers.size(); i++) {
+			// check if card is in player shop
 			for (int j = 0; j < this.shops.size(); j++) {
 				for (int card = 0; card < this.shops.get(this.buyers.get(i).getBuyerId()).size(); card++) {
-					if (this.shops.get(this.buyers.get(i).getBuyerId()).get(card) == minion) {
+					if (this.shops.get(this.buyers.get(i).getBuyerId()).get(card) == minion || this.shops.get(this.buyers.get(i).getBuyerId()).get(card).getIdMinion() == minion.getIdMinion()) {
 						return true;
 					}
+				}
+			}
+			// check if card is in player hand
+			for (int j = 0; j < this.buyers.get(i).getBoard().getHand().size(); j++) {
+				if (this.buyers.get(i).getBoard().getHand().get(j).getIdMinion() == minion.getIdMinion()) {
+					return true;
 				}
 			}
 		}
@@ -92,16 +112,27 @@ public class Tavern
 	public boolean sell(Minion minion, int playerId) {
 		// get player from buyers list
 		Player player = this.buyers.get(playerId);
-		try {
-			// remove minion from his hand
-			player.getBoard().getHand().remove(minion);
-			// add one gold
-			player.gainGold(1);
-			System.out.println("\n" + minion.getName() + " selled by " + player.getName() + "\n");
-			return true;	
-		} catch (Exception error) {
+		if (player.getGold() >= 3 && player.getBoard().getHand().size() > 1) {
+			try {
+				// remove minion from his hand
+				player.getBoard().getHand().remove(minion);
+				// add one gold
+				player.gainGold(1);
+				System.out.println("\n" + minion.getName() + " selled by " + player.getName() + "\n");
+				// check minion type for demon
+				if (minion.getTribe().getName() == TribeCollection.Demon) {
+					// downgrade level because of card attribute
+					player.setLevel(player.getLevel() - 1);
+				}
+				return true;	
+			} catch (Exception error) {
+				return false;
+			}
+		} else {
+			System.out.println("You haven't enought gold to sell your last minion...");
 			return false;
 		}
+		
 	}
 	
 	public boolean recruit(Minion minion, int playerId) {
@@ -121,6 +152,11 @@ public class Tavern
 					// remove minion from player shop
 					this.shops.get(playerId).remove(minion);
 					System.out.println("\n" + minion.getName() + " is now in " + player.getName() + " hand !" + "\n");
+					// check minion type for demon
+					if (minion.getTribe().getName() == TribeCollection.Demon) {
+						// upgrade level because of card attribute
+						player.setLevel(player.getLevel() + 1);
+					}
 					return true;
 				} catch (Exception error) {
 					return false;
@@ -143,6 +179,7 @@ public class Tavern
 				this.buyers.get(playerId).setLevel(this.buyers.get(playerId).getLevel() + 1);
 				this.buyers.get(playerId).setCostLevelUp(5);
 				this.buyers.get(playerId).lostGold(5);
+				System.out.println("\nCongrat's " + this.buyers.get(playerId).getName() + " ! You are now level " + this.buyers.get(playerId).getLevel());
 			}
 		} else {
 			System.out.println(this.buyers.get(playerId).getName() + " has insuficient gold to level up !");
