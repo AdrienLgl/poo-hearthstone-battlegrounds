@@ -96,3 +96,6 @@ Your first card in you board begin to attack at the next turn.
 The last player with cards on his board win the round :
 
 ![fight](./doc/fight.PNG)
+
+
+[Voir la doc technique](./doc/technique/technique.md)
