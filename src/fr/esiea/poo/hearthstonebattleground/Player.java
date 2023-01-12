@@ -19,7 +19,7 @@ public class Player {
 		this.idPlayer = id;
 		this.name = name;
 		this.board = new Board();
-		this.gold = 3;
+		this.gold = 2; // will be increment for the first turn
 		this.hp = 20;
 		this.level = 1;
 		this.costLevelUp = 5;
